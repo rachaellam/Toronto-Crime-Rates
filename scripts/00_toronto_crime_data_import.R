@@ -51,7 +51,7 @@ toronto_crime_all <- raw_data %>%
 
 ### Finding the top 10 neighbourhoods (out of 140) with the most crimes ###
 toronto_crime_top <- toronto_crime_all %>%
-  melt(id = c("Neighbourhood"), #using `reshape2` to change dataframe to long-format data for plotting. kept Neighbourhood as the ID
+  melt(id = c("Neighbourhood"), # using `reshape2` to change dataframe to long-format data for plotting. kept Neighbourhood as the ID
        variable.name = "Year",
        value.name = "Number_of_Crimes") %>%
   group_by(Neighbourhood) %>%
@@ -77,7 +77,7 @@ compare_pop_crime %>% # plotting the number of crimes with their population
        subtitle = "Top 10 neighbourhoods with the most crimes between 2014-2019") +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 
-### Understanding neighbourhood population ###
+### Understanding overall neighbourhood population ###
 toronto_crime_pop_overall <- raw_data %>%
   as_tibble() %>%
   select(Neighbourhood, Population) %>%
@@ -89,17 +89,29 @@ toronto_crime_pop_overall <- raw_data %>%
   arrange(desc(Mean))
 
 toronto_crime_pop_overall %>%
-  knitr::kable(digits = 2, 
-               caption = "My first table.", 
+  knitr::kable(caption = "Variation of Neighbourhood Populations.", 
                col.names = c("Population Min", "Population Max", "Population Mean", "Population Standard Deviation"),
-               align = c('l', 'l', 'l', 'l')
-  )
+               align = c('l', 'l', 'l', 'l'),
+               booktabs = T) %>%
+  kable_styling()
+
+### Selected 10 Neighbourhood's populations ###
+
+toronto_crime_pop %>%
+  arrange(desc(Population)) %>%
+  knitr::kable(caption = "Neighbourhod Populations.", 
+               col.names = c("Neighbourhood", "Population"),
+               align = c('l', 'l'),
+               booktabs = T) %>%
+  kable_styling(latex_options = "striped")
+
+### Per Capita Calculations ###
 
 per_capita <- compare_pop_crime%>%
   transform(per_capita = (Number_of_Crimes / Population) * 100000)
 
 per_capita %>%
-  ggplot(aes(x = reorder(Neighbourhood, -per_capita), y = per_capita, fill = Population)) + # ordered by population size
+  ggplot(aes(x = reorder(Neighbourhood, -per_capita), y = per_capita, fill = Population)) + # ordered by per capita
   geom_bar(stat = "identity", position = position_dodge()) +
   labs(x = "Neighbourhood",
        y = "Number of Crimes Committed",
@@ -109,13 +121,13 @@ per_capita %>%
 
 ### Compare all sum crimes across neighbourhoods ###
 toronto_crime_yearly <- toronto_crime_all %>%
-  melt(id = c("Neighbourhood"), #using `reshape2` to change dataframe to long-format data for plotting. kept Neighbourhood as the ID
+  melt(id = c("Neighbourhood"), # using `reshape2` to change dataframe to long-format data for plotting. kept Neighbourhood as the ID
        variable.name = "Year",
        value.name = "Number_of_Crimes")
   
 toronto_crime_yearly$Year <- as.character(toronto_crime_yearly$Year)
 
-toronto_crime_yearly <- toronto_crime_yearly %>% # this code was help from https://community.rstudio.com/t/replace-entire-string-by-one-specific-word/17302/6
+toronto_crime_yearly <- toronto_crime_yearly %>% # this code was produced with help from https://community.rstudio.com/t/replace-entire-string-by-one-specific-word/17302/6
   mutate(Year = case_when(
     str_detect(Year, "Assault_2014") ~ "2014",
     str_detect(Year, "Assault_2015") ~ "2015",

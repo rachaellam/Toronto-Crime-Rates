@@ -123,7 +123,7 @@ toronto_crime_pop_overall %>%
 ```
 
 ```{r pop2, fig.cap="Neighbourhood population numbers", echo=FALSE, warning=FALSE, message = FALSE}
-### Selected 10 Neighbourhood populations ###
+### Selected 10 Neighbourhood's populations ###
 
 toronto_crime_pop %>%
   arrange(desc(Population)) %>%
@@ -146,7 +146,7 @@ per_capita <- compare_pop_crime%>%
 
 ```{r percap, fig.cap="Neighbourhood crime per capita filled with population", echo=FALSE, warning=FALSE, message = FALSE, fig.width=8, fig.height=6}
 per_capita %>%
-  ggplot(aes(x = reorder(Neighbourhood, -per_capita), y = per_capita, fill = Population)) + # ordered by population size
+  ggplot(aes(x = reorder(Neighbourhood, -per_capita), y = per_capita, fill = Population)) + # ordered by per capita
   geom_bar(stat = "identity", position = position_dodge()) +
   labs(x = "Neighbourhood",
        y = "Crimes Per Capita",
@@ -160,13 +160,13 @@ Finally, I wanted to see how crime had progressed over the years. Figure \@ref(f
 ```{r, include=FALSE}
 ### Compare all sum crimes across neighbourhoods ###
 toronto_crime_yearly <- toronto_crime_all %>%
-  melt(id = c("Neighbourhood"), #using `reshape2` to change dataframe to long-format data for plotting. kept Neighbourhood as the ID
+  melt(id = c("Neighbourhood"), # using `reshape2` to change dataframe to long-format data for plotting. kept Neighbourhood as the ID
        variable.name = "Year",
        value.name = "Number_of_Crimes")
   
 toronto_crime_yearly$Year <- as.character(toronto_crime_yearly$Year)
 
-toronto_crime_yearly <- toronto_crime_yearly %>% # this code was help from https://community.rstudio.com/t/replace-entire-string-by-one-specific-word/17302/6
+toronto_crime_yearly <- toronto_crime_yearly %>% # this code was produced with help from https://community.rstudio.com/t/replace-entire-string-by-one-specific-word/17302/6
   mutate(Year = case_when(
     str_detect(Year, "Assault_2014") ~ "2014",
     str_detect(Year, "Assault_2015") ~ "2015",
