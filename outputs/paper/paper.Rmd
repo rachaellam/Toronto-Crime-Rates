@@ -1,10 +1,10 @@
 ---
-title: "TBD"
-subtitle: "TBD"
-author: "TBD"
-thanks: "Code and data are available at: LINK."
+title: "Toronto Crime Rates"
+subtitle: "Disadvantaged communities face continued marginalization."
+author: "Rachael"
+thanks: "Code and data are available at: https://github.com/rachaellam/Toronto-Crime-Rates.git."
 date: "`r format(Sys.time(), '%d %B %Y')`"
-abstract: "First sentence. Second sentence. Third sentence. Fourth sentence."
+abstract: "Neighbourhood Crime Rate data was pulled from the City of Toronto Open Portal. Although crime rates have remained consistent between 2014-2019, certain neighbourhoods experience higher crime rates than other in the Greater Toronto Area. Further analysis of neighbourhoods who experience higher crime rates are also economically disadvantaged communities. This data, without a further analysis and understanding of socioeconomic circumstances could lead to higher police surveillance and further unjust action towards marginalized communities"
 output:
   bookdown::pdf_document2:
 toc: FALSE
@@ -14,8 +14,14 @@ bibliography: references.bib
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 
+library(opendatatoronto)
 library(tidyverse)
-library(palmerpenguins)
+library(devtools)
+library(dplyr)
+library(reshape2)
+library(ggplot2)
+library(bookdown)
+
 ```
 
 # Introduction
@@ -27,14 +33,46 @@ library(palmerpenguins)
 
 Our data is of penguins (Figure \@ref(fig:bills)).
 
-```{r bills, fig.cap="Bills of penguins", echo = FALSE}
-ggplot(penguins, aes(x = island, fill = species)) +
-  geom_bar(alpha = 0.8) +
-  scale_fill_manual(values = c("darkorange","purple","cyan4"),
-                    guide = FALSE) +
-  theme_minimal() +
-  facet_wrap(~species, ncol = 1) +
-  coord_flip()
+```{r, include=FALSE}
+raw_data <- read_csv(here::here("inputs/data/raw_data.csv"))
+
+toronto_crime_highest <- raw_data %>%
+  as_tibble() %>%
+  select(Neighbourhood, Robbery_2014, Robbery_2015, Robbery_2016, Robbery_2017, Robbery_2018, Robbery_2019, Robbery_AVG) %>% # focusing on robbery. There are other crimes to choose from if desired.
+  slice_max(Robbery_AVG, n = 10) %>% # choosing 10 neighbourhoods with the highest robbery average between 2014-2019
+  select(Neighbourhood, Robbery_2014, Robbery_2015, Robbery_2016, Robbery_2017, Robbery_2018, Robbery_2019) %>% # removing Robber_AVG column
+  melt(id = c("Neighbourhood"), #using `reshape2` to change dataframe to long-format data for plotting. kept Neighbourhood as the ID
+       variable.name = "Year",
+       value.name = "Number_of_Robberies")
+
+toronto_crime_highest$Year <- as.character(toronto_crime_highest$Year) # turned column from factor into character to mutate below
+
+toronto_crime_highest <-
+  toronto_crime_highest %>% # mutated values to only be year rather than type_year
+  mutate(Year = case_when(
+    str_detect(Year, "Robbery_2014") ~ "2014",
+    str_detect(Year, "Robbery_2015") ~ "2015",
+    str_detect(Year, "Robbery_2016") ~ "2016",
+    str_detect(Year, "Robbery_2017") ~ "2017",
+    str_detect(Year, "Robbery_2018") ~ "2018",
+    str_detect(Year, "Robbery_2019") ~ "2019",
+    TRUE ~ Year
+  ))
+```
+
+
+```{r bills, fig.cap="Bills of penguins", echo = FALSE, warning=FALSE}
+
+toronto_crime_highest%>%
+  ggplot(aes(x = Year, y = Number_of_Robberies, color = Neighbourhood)) +
+  geom_smooth(aes(group = Neighbourhood), se = FALSE) +
+  scale_y_continuous(limits = c(0, NA)) +
+  labs(color = "Neighbourhoods",
+       x = "Date",
+       y = "Number of Robberies",
+       title = "Toronto Crime Rate",
+       subtitle = "Number of robberies per year") +
+  theme_minimal()
 ```
 
 Talk more about it.
@@ -43,14 +81,16 @@ Also bills and their average (Figure \@ref(fig:billssssss)). (Notice how you can
 
 ```{r billssssss, fig.cap="More bills of penguins", echo = FALSE, fig.width=8, fig.height=4}
 
-# This needs to be about the random data tha tI sasmpled?
-ggplot(penguins, aes(x = island, fill = species)) +
-  geom_bar(alpha = 0.8) +
-  scale_fill_manual(values = c("darkorange","purple","cyan4"),
-                    guide = FALSE) +
-  theme_minimal() +
-  facet_wrap(~species, ncol = 1) +
-  coord_flip()
+toronto_crime_pop_top <- raw_data %>%
+  as_tibble() %>%
+  select(Neighbourhood, Population) %>%
+  slice_max(Population, n = 10)
+
+toronto_crime_pop_top %>%
+  ggplot(aes(x = Neighbourhood, y = Population, fill = Neighbourhood)) +
+  geom_bar(stat = "identity") +
+  ylab("proportion") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
 ```
 
 Talk way more about it. 
