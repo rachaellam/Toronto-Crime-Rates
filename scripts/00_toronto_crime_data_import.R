@@ -173,10 +173,3 @@ toronto_crime_yearly %>%
        title = "Toronto Crime Rate",
        subtitle = "Number of robberies per year") +
   theme_minimal()
-
-toronto_crime_yearly %>%
-  group_by(Neighbourhood) %>%
-  summarize(
-    Mean = mean(Number_of_Crimes)) %>%
-  arrange(desc(Mean))
-
