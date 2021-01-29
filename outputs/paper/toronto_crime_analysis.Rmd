@@ -1,11 +1,11 @@
 ---
-title: "Toronto Crime Rates"
+title: "Ten Neighbourhoods in Toronto with the Highest Total Crime Experience Vastly Different Crime Rates"
 author: "Rachael Lam"
 date: "`r format(Sys.time(), '%d %B %Y')`"
 output:
   bookdown::pdf_document2:
-subtitle: "Disadvantaged communities face continued marginalization."
-abstract: "Neighbourhood Crime Rate data was pulled from the City of Toronto Open Portal to analyze neighbourhoods that were most affected by crime and how crime rates have changed over time. Although crime rates have risen between 2014-2019, certain neighbourhoods experience higher crime rates in the Greater Toronto Area. Further literature reviews of neighbourhoods who experience higher crime rates are also found to be economically disadvantaged communities. This data, without a further analysis and understanding of socioeconomic circumstances could lead to higher police surveillance and further punitive action towards marginalized communities."
+subtitle: "Marginalized communnities experience different crime rates due to continued discrimination."
+abstract: "Neighbourhood Crime Rate data was pulled from the City of Toronto Open Portal to analyze neighbourhoods that were most affected by crime and how crime rates have changed over time. Although crime rates have risen between 2014-2019, certain neighbourhoods experience higher crime rates in the Greater Toronto Area. Further literature reviews of neighbourhoods who experience higher crime rates are also found to be economically disadvantaged communities. This data, without a further analysis and understanding of socioeconomic circumstances, could lead to higher police surveillance and further punitive action towards marginalized communities."
 thanks: 'Code and data are available at: https://github.com/rachaellam/Toronto-Crime-Rates.git.'
 toc: no
 bibliography: references.bib
@@ -13,7 +13,6 @@ bibliography: references.bib
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
-knitr::opts_chunk$set(fig.pos = 'H')
 
 library(opendatatoronto)
 library(tidyverse)
@@ -31,9 +30,9 @@ library(kableExtra)
 
 In 1971, Richard Nixon launched the War on Drugs followed by Ronald Reagan signing the Anti-Drug Abuse Act in 1986, initiating decades of increase police presence and highly punitive sentences. Public opinion shifted in support for harsher punishment leading to a massive increase in law-and-order government agencies [@marable]. Crime rate statistics were largely misconstrued to further push anti-crime policies that poorly affected low-income communities and communities of colour. These policies led to mass surveillance under the guise of safety and protection, continuing the cycle of oppression that marginalized communities face [@windsor]. The long history of discriminatory crime and punishment is not unique to America. Canada has similarly promoted harsh punishments such as enforcing mandatory sentences for drug related crimes during the Stephen Harper administration. Even flyers circulating from the the same time proclaimed "Serious Crime = Serious Time" [@dekeseredy]. 
 
-Unfortunately, Canada is reluctant to admit racialized practices and histories, therefore race based data is either suppressed, decidedly unreported or not readily available [@owusubempah]. Police departments are responsible for the collection of a portion of Canada's data, which tends to be bias towards communities of color. Between 2001 and 2006, 16% of investigations involving police use of force involved black civilians despite only accounting for 3.6% of the population[@owusubempah]. This discrimination towards communities of colour can lead to disproportionately high numbers of crime incidents, skewing the veracity of the situation and resulting in a disproportionately large population of Black and Indigenous communities in federal and provincial institution [@owusubempah].
+Unfortunately, Canada is reluctant to admit racialized practices and histories, therefore race based data is either suppressed, decidedly unreported or not readily available [@owusubempah]. Police departments are responsible for the collection of a portion of Canada's data, which tends to be bias towards communities of color. Between 2001 and 2006, 16% of investigations involving police use of force involved black civilians despite the black population only accounting for 3.6% of Ontario's population[@owusubempah]. This discrimination towards communities of colour can lead to disproportionately high numbers of crime incidents, skewing the veracity of the situation and resulting in a disproportionately large population of Black and Indigenous communities in federal and provincial institution [@owusubempah].
 
-Due to the absence of racial data or overrepresentation in reporting due to police biases, a holistic and historical understanding of race and poverty must be taken when examining crime data. In this paper, I will use crime rate data from the City of Toronto to explore the neighbourhoods that face the highest rates of crime. I will then analyze the trajectory of crime rates between 2014 and 2019. Finally I will investigate the neighbourhood profiles from the 2016 Census to gain a greater understanding of a neighbourhood's demographic and the consequences of generalizing crime statistics. While data and statistics can share many valuable insights, they are numbers that have been manipulated in the past for particular political agendas. Careful examination must be insured to avoid further marginalization of disenfranchised communities.
+Due to the absence of racial data or overrepresentation in reporting because of to police biases, a holistic and historical understanding of race and poverty must be taken when examining crime data. In this paper, I will use crime rate data from the City of Toronto to explore the neighbourhoods that face the highest rates of crime. I will then analyze the trajectory of crime rates between 2014 and 2019. Finally I will investigate the neighbourhood profiles from the 2016 Census to gain a greater understanding of a neighbourhood's demographic and the consequences of generalizing crime statistics. While data and statistics can share many valuable insights, they are numbers that have been manipulated in the past for particular political agendas. Careful examination must be insured to avoid further marginalization of disenfranchised communities.
 
 
 # Data
@@ -96,7 +95,7 @@ compare_pop_crime %>% # plotting the number of crimes with their population
 
 ```
 
-To better understand how population varies, I reported the min, the max, the mean, and the standard deviation of all neighbourhoods in the Greater Toronto Area using `kableExtra` [@kableExtra] (Table \@ref(tab:pop)). The Population Max confirms that Waterfront Communities-The Island has one of the largest population sizes and that Bay Street Corridor has an average population size. Kensington-Chinatown similarly has an average population size compared to the Population Mean and Population Min despite it being on the bottom end of the gradient scale in Figure \@ref(fig:popcrime).
+To better understand how population varies, I reported the min, the max, the mean, and the standard deviation of all neighbourhoods in the Greater Toronto Area using `kableExtra` [@kableExtra] (Table \@ref(tab:pop)). The Population Max confirms that Waterfront Communities-The Island has one of the largest population sizes and that Bay Street Corridor has an average population size compared to the Greater Toronto Area. Kensington-Chinatown similarly has an average population size compared to the Population Mean and Population Min despite it only having a population size of 17945 as shown in Table \@ref(tab:pop2). To see more detailed population numbers, please refer to Table \@ref(tab:pop2).
 
 ```{r, include=FALSE}
 ### Understanding neighbourhood population ###
@@ -117,10 +116,25 @@ toronto_crime_pop_overall <- raw_data %>%
 toronto_crime_pop_overall %>%
   knitr::kable(caption = "Variation of Neighbourhood Populations.", 
                col.names = c("Population Min", "Population Max", "Population Mean", "Population Standard Deviation"),
-               align = c('l', 'l', 'l', 'l')) %>%
-  kable_styling()
+               align = c('l', 'l', 'l', 'l'),
+               booktabs = T) %>%
+  kable_styling(full_width = T)
 
 ```
+
+```{r pop2, fig.cap="Neighbourhood population numbers", echo=FALSE, warning=FALSE, message = FALSE}
+### Selected 10 Neighbourhood populations ###
+
+toronto_crime_pop %>%
+  arrange(desc(Population)) %>%
+  knitr::kable(caption = "Neighbourhod Populations.", 
+               col.names = c("Neighbourhood", "Population"),
+               align = c('l', 'l'),
+               booktabs = T) %>%
+  kable_styling(full_width = T) %>%
+  column_spec(1, width = "12cm")
+```
+
 
 
 Now with a greater understanding of population, I calculated crime per capita (Figure \@ref(fig:percap)). This confirmed my findings from earlier: although Waterfront Communities-The Island had the highest number of total crimes, because of its density, it had fewer crimes on a per capita basis. Bay Street Corridor on the other hand, despite controlling for population, still had one of the highest crime rates in the Greater Toronto Area. Additionally, Moss Park and Kensington-Chinatown had similarly high crime rates for their population size.
@@ -219,7 +233,7 @@ toronto_crime_yearly %>%
 
 # Results
 
-Initial examination would assume that Waterfront Communities-The Island is seemingly the most dangerous neighbourhood in Toronto as it has the highest number of total crimes. Once population was factored into the analysis, they had one of the lowest crime rates of the selected neighbourhoods in the Greater Toronto Area. In contrast, Kensington-Chinatown, which had one of the lowest crime numbers of the selected ten neighbourhoods, had one of the highest number of crimes per capita. Additionally, Bay Street Corridor had the second highest number of total crimes with one of the lowest population densities, signalling the highest number of crimes per capita.
+Initial examination would assume that Waterfront Communities-The Island is seemingly the most dangerous neighbourhood in Toronto as it has the highest number of total crimes. Once population was factored into the analysis, they had one of the lowest crime rates of the selected ten neighbourhoods in the Greater Toronto Area. In contrast, Kensington-Chinatown, which had one of the lowest crime numbers of the selected ten neighbourhoods, had one of the highest number of crimes per capita. Additionally, Bay Street Corridor had the second highest number of total crimes with one of the lowest population densities, signalling the highest number of crimes per capita.
 
 Finally, the sum of all crimes was plotted in relation to the year, revealing an increase in crime between 2014 and 2019. Although additional research would have to be conducted to gain insight into the many factors that could cause a rise in crime which is beyond the scope of this paper, one reason may be attributed to the sharp increase in population according to the Toronto Census of Population data [@census]. Waterfront Communities-The Island, Bay Street Corridor and Moss Park all experienced a population increase of 52%, 33.3% and 25% respectively between 2011 and 2016. This data corresponds particularly with Bay Street Corridor and Waterfront Communities-The Island's significant increase in crime.
 
@@ -234,7 +248,7 @@ Bay Street Corridor is located in Toronto's Downtown Core. The neighbourhood is 
 
 ## Moss Park
 
-Moss Park is a small neighbourhood that only spans two blocks between Jarvis Street and Parliament Street. It is well known for being the site of CBC's Kim's Convenience TV Show but as well as for being dominated by public housing projects. Moss Park has 34.6% of its residents living in poverty and 31.9% classified as low income. Additionally, 39.9% of households live in unaffordable housing. The visible minority population makes up 42.6% of Moss Park and 2.1% of residents identify as Aboriginal.
+Moss Park is a small neighbourhood that only spans two blocks between Jarvis Street and Parliament Street. It is well known for being the site of CBC's Kim's Convenience TV Show as well as being dominated by public housing projects. Moss Park has 34.6% of its residents living in poverty and 31.9% classified as low income. Additionally, 39.9% of households live in unaffordable housing. The visible minority population makes up 42.6% of Moss Park and 2.1% of residents identify as Aboriginal.
 
 ## Kensington-Chinatown
 
@@ -243,19 +257,19 @@ dwelling that are in need of major repairs" [@census]. The visible minority popu
 
 ## Waterfront Communities-The Island
 
-Waterfront Communities-The Island is a long stretch of land near the water that includes the Toronto Islands and parts of Queen Street West. Although it is population the largest of all four neighbourhoods mentioned in Section 4, it is also the wealthiest. Only 18.7% of residents live in poverty and 16.5% are classified as low income. Despite this, 40% of households live in unaffordable housing despite having a median family income of $108,199. In addition, the visible minority population makes up 44.1% of the neighbourhood and 1% of residents identify as Aboriginal.
+Waterfront Communities-The Island is a long stretch of land near the water that includes the Toronto Islands and parts of Queen Street West. Although its population is the largest of all four neighbourhoods mentioned in Section 2, it is also the wealthiest. Only 18.7% of residents live in poverty and 16.5% are classified as low income. Despite this, 40% of households live in unaffordable housing despite having a median family income of $108,199. In addition, the visible minority population makes up 44.1% of the neighbourhood and 1% of residents identify as Aboriginal.
 
 ## Comparison
 
-Although there are many statistics to digest, it is first necessary to compare these statistics with the average statistics across the Greater Toronto Area. The average percent of people in Toronto who live below the poverty line is 21.9%. This means that Bay Street Corridor, Moss Park and Kensington-Chinatown have a higher percentage of residents living below the poverty line on average. In comparison, Waterfront Communities-The Island have a lower percentage than the city's average. 
+Although there are many statistics to digest, it is first necessary to compare these statistics with the average statistics across the Greater Toronto Area. The average percent of people in Toronto who live below the poverty line is 21.9%. This means that Bay Street Corridor, Moss Park and Kensington-Chinatown have a higher percentage of residents living below the poverty line. In comparison, Waterfront Communities-The Island have a lower percentage than the city's average. 
 
-The racial demographics also vary significantly across the selected neighbourhoods. While 50.1% of Toronto's population is comprised of visible minorities, Bay Street Corridor and Kensington-Chinatown have an exceptionally higher percentage. Furthermore, Bay Street Corridor has the highest percentage of non-permanent residents at 20.1% compared to the city's average of 3.5%. In Moss Park, 2% of residents identify as Aboriginal compared to the city's average of 0.9%.
+The racial demographics also vary significantly across the selected neighbourhoods. Bay Street Corridor and Kensington-Chinatown have an exceptionally higher percentage of visible minorities, relative to Toronto's average of 50.1%. Furthermore, Bay Street Corridor has the highest percentage of non-permanent residents at 20.1% compared to the city's average of 3.5%. In Moss Park, 2% of residents identify as Aboriginal compared to the city's average of 0.9%.
 
-These figures accentuate the economic disparities within the Greater Toronto Area neighbourhoods. Poverty has historically been the rational for higher police surveillance, disguised as a crusade against drug abuse. Unfortunately, such measures have disproportionately affected low income communities, further trapping them in the cycle of poverty. Lack of resources for struggling families in addition to Toronto's unaffordable housing also compound adverse circumstances. In addition, the impact of racism in Canada can similarly be attributed to the overrepresentation of crime in the four neighbourhoods identified in this section. Canada's practice of racism through a long history of colonization and genocide has had lasting consequences for Indigenous communities. Indigenous citizens are more than two times as likely to have involuntary, frequent contact with police [@alberton]. Comparably, although certainly different histories, black communities in Canada have faced a long history of discriminatory practices including police surveillance. Black Lives Matter Toronto recently protested the "Community Contracts Policy," which sanctioned the practice of demanding identification from individuals in public spaces. This practice disproportionately affected black communities as they constituted 27% of incidences despite only representing 8.5% of Toronto's population [@tee]. 
+These figures accentuate the economic disparities within the Greater Toronto Area neighbourhoods. Poverty has historically been the rational for higher police surveillance, disguised as a crusade against drug abuse. Unfortunately, such measures have disproportionately affected low income communities, further trapping them in the cycle of poverty. Lack of resources for struggling families in addition to Toronto's unaffordable housing also compound adverse circumstances. In addition, the impact of racism in Canada can similarly be attributed to the overrepresentation of crime in the four neighbourhoods identified in this section. This practice of racism, through a long history of colonization and genocide, has had lasting consequences for Indigenous communities. Indigenous citizens are more than two times as likely to have involuntary, frequent contact with police [@alberton]. Comparably, although certainly different histories, black communities in Canada have faced a very similar history of discriminatory practices including police surveillance. Black Lives Matter Toronto recently protested the "Community Contracts Policy," which sanctioned the practice of demanding identification from individuals in public spaces. This practice disproportionately affected black communities as they constituted 27% of incidences despite only representing 8.5% of Toronto's population [@tee]. 
 
 # Conclusion
 
-There has been much debate on the ethics of providing demographic information in crime statistics. While some argue that it provides greater transparency into the criminal justice system, other argue it could that the data could be used to reinvigorate outdated claims of associations between crime and race [@owusubempah]. Both opinions shed light on the necessity to handle data appropriately and with caution. The graphs and tables displayed in this paper could be easily generalized, while the Census statistics could be misinterpreted as an argument to blame low income communities and communities of colour for high crime rates. However, I propose that with this information, it is important to reexamine the factors that place certain communities in a perpetual state of poverty. It is necessary to learn the historical impact of colonization and racism to better understand how Canada can rectify the situation and provide better resources for those affected, rather than increasing funding for discriminatory policing practices.
+There has been much debate on the ethics of providing demographic information in crime statistics. While some argue that it provides greater transparency into the criminal justice system, others argue that the data could be used to reinvigorate outdated claims of associations between crime and race [@owusubempah]. Both opinions shed light on the necessity to handle data appropriately and with caution. The graphs and tables displayed in this paper could be easily generalized, while the Census statistics could be misinterpreted as an argument to blame low income communities and communities of colour for high crime rates. I propose, however, that with this information, it is important to reexamine the factors that place certain communities in a perpetual state of poverty. It is necessary to learn the historical impact of colonization and racism to better understand how Canada can rectify the situation and provide better resources for those affected, rather than increasing funding for discriminatory policing practices.
 
 \pagebreak
 
