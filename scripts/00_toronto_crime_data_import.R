@@ -35,7 +35,7 @@ all_data <-
 view(all_data)
 
 ### Saving the dataset ###
-write_csv(raw_data, "inputs/data/raw_data.csv")
+write_csv(all_data, "inputs/data/raw_data.csv")
 raw_data <- read.csv("inputs/data/raw_data.csv")
 
 ### Grabbing specific columns ###
